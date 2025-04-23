@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import CourseOverview from './components/CourseOverview';
 import CurriculumBuilder from './components/CurriculumBuilder';
 import Localization from './components/Localization';
@@ -20,6 +20,18 @@ const CourseCreationFlow = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { courseData, updateCourseData, saveCourse, saveDraft } = useContext(CourseContext);
   const navigate = useNavigate();
+  const { courseId } = useParams();
+
+  // Use updateCourseData to initialize new courses with default values
+  useEffect(() => {
+    // If this is a new course (no courseId) and title is empty, set a default title
+    if (!courseId && !courseData.title) {
+      updateCourseData({ 
+        title: 'New Course',
+        status: 'draft'
+      });
+    }
+  }, [courseId, courseData.title, updateCourseData]);
 
   const nextStep = () => {
     if (currentStep < steps.length - 1) {

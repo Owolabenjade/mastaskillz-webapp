@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
+import React, { useState, useContext, useEffect, useRef, useCallback } from 'react';
 import { CourseContext } from '../../../context/CourseContext';
 import VideoPlayer from './VideoPlayer';
 import { fileUploader } from '../utils/fileUploader';
@@ -44,12 +44,12 @@ const LessonCreator = ({ moduleId, lessonId }) => {
     }));
   };
 
-  // Save lesson data
-  const handleSave = () => {
+  // Save lesson data with useCallback to prevent dependency issues
+  const handleSave = useCallback(() => {
     if (lesson) {
       updateLesson(moduleId, lessonId, formData);
     }
-  };
+  }, [moduleId, lessonId, updateLesson, formData, lesson]);
 
   // Auto-save when form data changes (except for content which is handled separately)
   useEffect(() => {
@@ -63,7 +63,7 @@ const LessonCreator = ({ moduleId, lessonId }) => {
     }, 1000);
 
     return () => clearTimeout(timeoutId);
-  }, [formData.title, formData.contentType, formData.description]);
+  }, [formData.title, formData.contentType, formData.description, lesson, handleSave]);
 
   // Handle file upload trigger
   const handleUploadClick = () => {
@@ -97,15 +97,17 @@ const LessonCreator = ({ moduleId, lessonId }) => {
         setUploadProgress(progress);
       });
 
+      const updatedContent = uploadResult;
+      
       setFormData(prev => ({
         ...prev,
-        content: uploadResult
+        content: updatedContent
       }));
 
       // Save the updated content
       updateLesson(moduleId, lessonId, {
         ...formData,
-        content: uploadResult
+        content: updatedContent
       });
     } catch (error) {
       console.error('Upload error:', error);

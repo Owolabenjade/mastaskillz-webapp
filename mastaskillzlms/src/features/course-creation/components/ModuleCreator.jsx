@@ -1,8 +1,7 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { CourseContext } from '../../../context/CourseContext';
 import LessonCreator from './LessonCreator';
 import QuizBuilder from './QuizBuilder';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const ModuleCreator = ({ moduleId }) => {
   const { courseData, updateModule, deleteModule, addLesson, addQuiz } = useContext(CourseContext);
@@ -39,12 +38,12 @@ const ModuleCreator = ({ moduleId }) => {
     }));
   };
 
-  // Save module data
-  const handleSave = () => {
+  // Save module data with useCallback to prevent dependency issues
+  const handleSave = useCallback(() => {
     if (module) {
       updateModule(moduleId, formData);
     }
-  };
+  }, [moduleId, formData, module, updateModule]);
 
   // Auto-save when form data changes
   useEffect(() => {
@@ -55,7 +54,7 @@ const ModuleCreator = ({ moduleId }) => {
     }, 1000);
 
     return () => clearTimeout(timeoutId);
-  }, [formData]);
+  }, [formData.title, formData.description, module, handleSave]);
 
   // Handle add lesson
   const handleAddLesson = () => {
@@ -130,13 +129,6 @@ const ModuleCreator = ({ moduleId }) => {
 
   const contentList = createContentList();
 
-  // Handle drag and drop reordering
-  const onDragEnd = (result) => {
-    // Implement content reordering logic
-    // (This would be more complex and require tracking positions between two arrays - lessons and quizzes)
-    // For simplicity in this demo, we'll just show the UI elements
-  };
-
   if (!module) {
     return <div className="module-not-found">Module not found</div>;
   }
@@ -196,49 +188,28 @@ const ModuleCreator = ({ moduleId }) => {
             <p>This module has no content yet. Add lessons or quizzes to build your curriculum.</p>
           </div>
         ) : (
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId={`module-content-${moduleId}`} type="content">
-              {(provided) => (
-                <div 
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className="content-list"
-                >
-                  {contentList.map((item, index) => (
-                    <Draggable
-                      key={item.id}
-                      draggableId={item.id}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          className={`content-item ${activeItemId === item.id ? 'active' : ''} ${item.contentType}-item`}
-                          onClick={() => handleItemSelect(item.id, item.contentType)}
-                        >
-                          <div className="content-item-icon">
-                            {item.contentType === 'lesson' ? '📚' : '📝'}
-                          </div>
-                          <div className="content-item-details">
-                            <div className="content-item-title">{item.title}</div>
-                            <div className="content-item-type">
-                              {item.contentType === 'lesson' ? 
-                                `Lesson • ${item.contentType === 'video' ? 'Video' : 'Interactive'}` : 
-                                `Quiz • ${item.questions?.length || 0} questions`}
-                            </div>
-                          </div>
-                          <div className="content-item-handle">⋮</div>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
+          <div className="content-list">
+            {contentList.map((item, index) => (
+              <div
+                key={item.id}
+                className={`content-item ${activeItemId === item.id ? 'active' : ''} ${item.contentType}-item`}
+                onClick={() => handleItemSelect(item.id, item.contentType)}
+              >
+                <div className="content-item-icon">
+                  {item.contentType === 'lesson' ? '📚' : '📝'}
                 </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+                <div className="content-item-details">
+                  <div className="content-item-title">{item.title}</div>
+                  <div className="content-item-type">
+                    {item.contentType === 'lesson' ? 
+                      `Lesson • ${item.contentType === 'video' ? 'Video' : 'Interactive'}` : 
+                      `Quiz • ${item.questions?.length || 0} questions`}
+                  </div>
+                </div>
+                <div className="content-item-handle">⋮</div>
+              </div>
+            ))}
+          </div>
         )}
 
         <div className="content-editor">

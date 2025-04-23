@@ -1,70 +1,100 @@
-# Getting Started with Create React App
+# MastaSkillz Course Creation Feature
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This repository contains the course creation feature for the MastaSkillz web application. This feature allows content creators to build comprehensive courses with modules, lessons, quizzes, and supports multiple languages and accessibility options.
 
-## Available Scripts
+## Important Note
 
-In the project directory, you can run:
+**This version uses localStorage instead of Firebase for data storage to enable demonstration without backend setup.**
 
-### `npm start`
+The Firebase integration is prepared but commented out to allow for a quick presentation. It will be fully integrated in the next phase of development.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Setup Instructions
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 1. Install Dependencies
 
-### `npm test`
+```bash
+npm install
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+This will install all required dependencies including React, React Router DOM, and others specified in package.json.
 
-### `npm run build`
+### 2. Start the Development Server
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+npm start
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+The application will start at http://localhost:3000 by default.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Using the Course Creation Feature
 
-### `npm run eject`
+1. Navigate to the Dashboard
+2. Click the "+ Create Course" button to begin creating a new course
+3. Follow the 5-step workflow:
+   - Course Overview: Add basic course details
+   - Curriculum Builder: Create modules, lessons, and quizzes
+   - Localization & Accessibility: Add translation and accessibility options
+   - Pricing & Publishing: Set pricing options
+   - Review & Publish: Final review and publication
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Key Features
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **Multi-step Workflow**: Intuitive step-by-step process for course creation
+- **Module Management**: Create and organize modules within courses
+- **Content Types**:
+  - Video lessons (with custom video player)
+  - Interactive lessons with configurable options
+  - Quizzes with multiple question types
+- **AI Assistance**:
+  - Title suggestions
+  - Summary generation
+  - Automatic quiz question creation
+- **Localization**: Support for translating content to multiple languages
+- **Accessibility Options**: Captions and mobile-friendly layout options
+- **Pricing Options**: Free, freemium, or paid course configuration
+- **Course Preview**: Preview how the course will appear to learners
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Current Limitations (Demo Version)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Data is stored in browser localStorage and will be lost if cleared
+- File uploads create browser object URLs that only work during the current session
+- AI features return simulated responses
+- No user authentication
 
-## Learn More
+## Next Steps for Development
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Implement Firebase backend integration (prepared in code)
+- Add user authentication
+- Connect to OpenAI API for real AI assistance
+- Implement real-time collaboration features
+- Add analytics dashboard
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Project Structure
 
-### Code Splitting
+- `src/features/course-creation/`: Contains all course creation components
+- `src/context/CourseContext.js`: Manages state for course creation
+- `src/services/`: Contains API and service integrations (mocked for now)
+- `src/components/common/`: Shared UI components
+- `src/components/dashboard/`: Dashboard components
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Mock Services
 
-### Analyzing the Bundle Size
+This demo implementation includes the following mock services:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- `courseService`: Handles course data using localStorage
+- `aiService`: Provides simulated AI responses
+- `fileUploader`: Creates temporary object URLs for uploaded files
 
-### Making a Progressive Web App
+These will be replaced with real Firebase implementations in the next phase.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Presentation Tips
 
-### Advanced Configuration
+When presenting this feature to the team:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+1. Focus on the user flow and UI/UX
+2. Demonstrate how a course is created step by step
+3. Show how modules, lessons, and quizzes can be added and configured
+4. Highlight the AI assistance features (simulated but showing the concept)
+5. Demonstrate the preview functionality
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+The core functionality is fully implemented for demonstration purposes, and the UI is complete. Firebase integration will come next.

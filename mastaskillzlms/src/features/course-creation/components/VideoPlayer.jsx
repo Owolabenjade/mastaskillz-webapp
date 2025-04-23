@@ -13,8 +13,8 @@ const VideoPlayer = ({ src, thumbnail, duration, interactive = false, options = 
   const [hasLiked, setHasLiked] = useState(false);
   const [showCaptions, setShowCaptions] = useState(false);
   
-  // Control visibility timer
-  let controlsTimeout = null;
+  // Control visibility timer - moved inside useEffect
+  const [controlsTimeoutId, setControlsTimeoutId] = useState(null);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -31,12 +31,12 @@ const VideoPlayer = ({ src, thumbnail, duration, interactive = false, options = 
         video.removeEventListener('loadedmetadata', handleMetadataLoaded);
         video.removeEventListener('ended', handleVideoEnded);
         
-        if (controlsTimeout) {
-          clearTimeout(controlsTimeout);
+        if (controlsTimeoutId) {
+          clearTimeout(controlsTimeoutId);
         }
       };
     }
-  }, [videoRef.current]);
+  }, [controlsTimeoutId]); // Added controlsTimeoutId as dependency
 
   // Handle time updates
   const handleTimeUpdate = () => {
@@ -104,7 +104,8 @@ const VideoPlayer = ({ src, thumbnail, duration, interactive = false, options = 
 
   // Toggle fullscreen
   const toggleFullscreen = () => {
-    const videoContainer = videoRef.current.parentElement;
+    const videoContainer = videoRef.current?.parentElement;
+    if (!videoContainer) return;
     
     if (!document.fullscreenElement) {
       if (videoContainer.requestFullscreen) {
@@ -138,15 +139,17 @@ const VideoPlayer = ({ src, thumbnail, duration, interactive = false, options = 
   const handleMouseMove = () => {
     setShowControls(true);
     
-    if (controlsTimeout) {
-      clearTimeout(controlsTimeout);
+    if (controlsTimeoutId) {
+      clearTimeout(controlsTimeoutId);
     }
     
-    controlsTimeout = setTimeout(() => {
+    const newTimeoutId = setTimeout(() => {
       if (isPlaying) {
         setShowControls(false);
       }
     }, 3000);
+    
+    setControlsTimeoutId(newTimeoutId);
   };
 
   // Handle rewind (go back 10 seconds)

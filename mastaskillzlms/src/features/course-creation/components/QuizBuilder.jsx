@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { CourseContext } from '../../../context/CourseContext';
 import { aiService } from '../api/aiService';
 
@@ -45,12 +45,12 @@ const QuizBuilder = ({ moduleId, quizId }) => {
     }));
   };
 
-  // Save quiz data
-  const handleSave = () => {
+  // Save quiz data with useCallback to prevent dependency issues
+  const handleSave = useCallback(() => {
     if (quiz) {
       updateQuiz(moduleId, quizId, formData);
     }
-  };
+  }, [moduleId, quizId, formData, quiz, updateQuiz]);
 
   // Auto-save when form data changes
   useEffect(() => {
@@ -63,14 +63,14 @@ const QuizBuilder = ({ moduleId, quizId }) => {
     }, 1000);
 
     return () => clearTimeout(timeoutId);
-  }, [formData.title, formData.description]);
+  }, [formData.title, formData.description, quiz, handleSave]);
 
   // Save when questions change
   useEffect(() => {
     if (quiz && JSON.stringify(formData.questions) !== JSON.stringify(quiz.questions)) {
       handleSave();
     }
-  }, [formData.questions]);
+  }, [formData.questions, quiz, handleSave]);
 
   // Handle delete quiz
   const handleDeleteQuiz = () => {
